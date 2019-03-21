@@ -10,22 +10,26 @@ class BoxList extends Component {
 
         //state = array of boxes [.... {width, height, color, id: uuid}]
         this.state = { 
-            boxArray: [],
-            newBox: {}
+            boxArray: []
         };
         
         this.createBox = this.createBox.bind(this);
-        this.removeBox = this.removeBox.bind(this);
+
     }
     
     //function to remove a box
-    removeBox() {
-
+    removeBox(id) {
+        this.setState(state => ({
+            boxArray: state.boxArray.filter(box => box.id !== id)
+        }))
     }
 
     //function to create a box
-    createBox() {
-
+    createBox(box) {
+        let newBox = {...box, id: uuid()};
+        this.setState(state => ({
+            boxArray: [...state.boxArray, newBox]
+        }))
     }
 
     render() {
@@ -34,11 +38,12 @@ class BoxList extends Component {
                 <NewBoxForm notifyCreateBox={ this.createBox }/>
                 
                 { this.state.boxArray.map( b => (
-                    <Box 
+                    <Box
+                        key={b.id} 
                         width={ b.width }
                         height={ b.height }
                         color={ b.color }
-                        notifyRemoveBox={ this.removeBox }
+                        notifyRemoveBox={ () => this.removeBox(b.id) }
                     />
                     )
                 )}
